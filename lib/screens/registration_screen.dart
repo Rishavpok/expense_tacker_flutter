@@ -1,6 +1,8 @@
 import 'package:expense_tracker/modals/registration.dart';
+import 'package:expense_tracker/providers/registration_notifier.dart';
 import 'package:expense_tracker/providers/registration_provider.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
+import 'package:expense_tracker/states/registration_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -47,6 +49,36 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<RegistrationState>(registrationNotifierProvider, (
+      prev,
+      next,
+    ) async {
+      if (next is RegistrationLoading) {
+        showDialog(
+          context: context,
+          barrierDismissible: false, // prevent user from closing
+          builder: (_) {
+            return const Center(child: CircularProgressIndicator());
+          },
+        );
+      } else if (next is RegistrationSuccess) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Registration successful')));
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      } else if (next is RegistrationError) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.message)));
+      }
+    });
+
+    final registrationState = ref.watch(registrationNotifierProvider);
+
     return Scaffold(
       appBar: AppBar(title: Text('Sign up')),
       body: Padding(
@@ -186,15 +218,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      await handleRegister();
-                    } else {
-                      setState(() {
-                        _autovalidateMode = AutovalidateMode.always;
-                      });
-                    }
-                  },
+                  onPressed:
+                      registrationState is RegistrationLoading
+                          ? null
+                          : handleRegister,
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size.fromHeight(50),
                     backgroundColor: Colors.blue,
@@ -213,34 +240,15 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     );
   }
 
-  Future<void> handleRegister() async {
-    try {
-      final user = Registration(
-        firstName: _firstname.text.trim(),
-        lastName: _lastname.text.trim(),
-        email: _email.text.trim(),
-        phone: _phone.text.trim(),
-        username: _username.text.trim(),
-        password: _password.text.trim(),
-      );
-      final message = await ref.read(registrationProvider).register(user);
-
-      if (message.statusCode == 200) {
-        final message = 'User is registered successfully';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message), duration: Duration(seconds: 3)),
-        );
-        await Future.delayed(Duration(seconds: 2));
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
-    }
+  void handleRegister(){
+    final user = Registration(
+      firstName: _firstname.text.trim(),
+      lastName: _lastname.text.trim(),
+      email: _email.text.trim(),
+      phone: _phone.text.trim(),
+      username: _username.text.trim(),
+      password: _password.text.trim(),
+    );
+    ref.read(registrationProvider).register(user);
   }
 }

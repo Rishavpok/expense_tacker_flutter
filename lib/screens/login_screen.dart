@@ -1,10 +1,11 @@
 import 'package:expense_tracker/modals/users.dart';
+import 'package:expense_tracker/providers/login_notifier.dart';
 import 'package:expense_tracker/screens/home_screen.dart';
 import 'package:expense_tracker/services/token_service.dart';
+import 'package:expense_tracker/states/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:expense_tracker/providers/login_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -24,12 +25,52 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     _username = TextEditingController();
     _password = TextEditingController();
   }
 
+  void _handleLogin() {
+    if (_formKey.currentState!.validate()) {
+      final user = Users(
+        username: _username.text.trim(),
+        password: _password.text.trim(),
+      );
+
+      ref.read(loginNotifierProvider.notifier).login(user);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen<LoginState>(loginNotifierProvider, (prev, next) async {
+      if (next is LoginLoading) {
+        showDialog(
+          context: context,
+          barrierDismissible: false, // prevent user from closing
+          builder: (_) {
+            return const Center(child: CircularProgressIndicator());
+          },
+        );
+      } else if (next is LoginSuccess) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Login successful')));
+
+        await TokenService.saveToken(next.token);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
+      } else if (next is LoginError) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.message)));
+      }
+    });
+
+    final loginState = ref.watch(loginNotifierProvider);
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
       body: Padding(
@@ -100,43 +141,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      try {
-                        final user = Users(
-                          username: _username.text.trim(),
-                          password: _password.text.trim(),
-                        );
-
-                        final message = await ref
-                            .read(loginProvider)
-                            .login(user);
-
-                        final successMessage = 'Login successfull';
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(successMessage),
-                            duration: Duration(seconds: 3),
-                          ),
-                        );
-
-                        await TokenService.saveToken(message!);
-
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => const HomeScreen()),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text(e.toString())));
-                      }
-                    } else {
-                      setState(() {
-                        _autovalidateMode = AutovalidateMode.always;
-                      });
-                    }
-                  },
+                  onPressed: loginState is LoginLoading ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size.fromHeight(50),
                     backgroundColor: Colors.blue,
