@@ -24,7 +24,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadProfile();
   }
@@ -186,12 +185,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       });
                     }
                   },
-                  child: Text('Update Profile'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size.fromHeight(50),
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
                   ),
+                  child: Text('Update Profile'),
                 ),
               ),
             ],

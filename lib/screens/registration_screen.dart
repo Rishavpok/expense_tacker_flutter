@@ -1,6 +1,5 @@
 import 'package:expense_tracker/modals/registration.dart';
 import 'package:expense_tracker/providers/registration_notifier.dart';
-import 'package:expense_tracker/providers/registration_provider.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:expense_tracker/states/registration_state.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +21,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   late TextEditingController _phone;
   late TextEditingController _username;
   late TextEditingController _password;
-  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+  final AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _firstname = TextEditingController();
     _lastname = TextEditingController();
@@ -56,24 +54,26 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       if (next is RegistrationLoading) {
         showDialog(
           context: context,
-          barrierDismissible: false, // prevent user from closing
-          builder: (_) {
-            return const Center(child: CircularProgressIndicator());
-          },
+          barrierDismissible: false,
+          builder: (_) => const Center(child: CircularProgressIndicator()),
         );
-      } else if (next is RegistrationSuccess) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Registration successful')));
+      } else {
+        // Always dismiss loading dialog before anything else
+        Navigator.of(context, rootNavigator: true).pop(); // <-- dismiss dialog
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-        );
-      } else if (next is RegistrationError) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.message)));
+        if (next is RegistrationSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Registration successful')),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+          );
+        } else if (next is RegistrationError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(next.message)));
+        }
       }
     });
 
@@ -249,6 +249,6 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       username: _username.text.trim(),
       password: _password.text.trim(),
     );
-    ref.read(registrationProvider).register(user);
+     ref.read(registrationNotifierProvider.notifier).registration(user);
   }
 }

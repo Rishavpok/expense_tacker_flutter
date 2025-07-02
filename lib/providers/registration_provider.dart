@@ -9,7 +9,7 @@ final registrationProvider = Provider<ResgistrationService>(
 class ResgistrationService {
   final dio = Dio();
 
-  Future register( Registration user ) async {
+  Future register(Registration user) async {
     try {
       final response = await dio.post(
         'http://localhost:3000/api/users/register',
@@ -18,7 +18,11 @@ class ResgistrationService {
       );
       return response;
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Registration failed');
+      final errorMessage =
+          e.response?.data is Map && e.response?.data['message'] != null
+              ? e.response?.data['message']
+              : 'Registration failed';
+      throw Exception(errorMessage);
     }
   }
 }

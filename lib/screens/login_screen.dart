@@ -18,12 +18,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _username;
   late TextEditingController _password;
-  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+  final AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   bool _obscurePassword = true;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _username = TextEditingController();

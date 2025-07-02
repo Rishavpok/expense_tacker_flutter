@@ -22,7 +22,8 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
 
       state = RegistrationSuccess(response);
     } catch (e) {
-      state = RegistrationError(e.toString().replaceFirst("Exception: ", ""));
+    state = RegistrationError(e is Exception ? e.toString().replaceFirst("Exception: ", "") : e.toString());
+
     }
   }
 }
