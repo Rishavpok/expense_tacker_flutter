@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "897066441013",
+    "project_id": "flutterpushnotification-d6437",
+    "storage_bucket": "flutterpushnotification-d6437.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897066441013:android:a75c851d22bc54c272147c",
+        "android_client_info": {
+          "package_name": "com.example.expense_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDXWrwzCIvC6KkJMnghox28ZQ1432Qad8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
