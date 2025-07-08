@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:expense_tracker/core/guards/auth_guard.dart';
 import 'package:expense_tracker/features/authentication/routes/authentication_routes.dart';
+import 'package:expense_tracker/features/home/routes/home_routes.dart';
 
 // import '../features/authentication/';
 
@@ -23,9 +24,10 @@ class AppRouter extends RootStackRouter {
     ),
     AutoRoute(page: IntroScreenRoute.page, path: '/', guards: [isNotAuthorized]),
     AutoRoute(
-      page: HomeScreenRoute.page,
+      page: HomeModuleRoute.page,
       guards: [isAuthorizedGuard],
       path: '/home',
+      children: homeRoutes
     ),
   ];
 }

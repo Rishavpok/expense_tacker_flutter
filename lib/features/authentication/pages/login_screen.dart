@@ -1,12 +1,12 @@
 import 'package:expense_tracker/modals/users.dart';
-import 'package:expense_tracker/screens/home_screen.dart';
+import 'package:expense_tracker/features/home/pages/home_screen.dart';
 import 'package:expense_tracker/services/token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:expense_tracker/providers/login_provider.dart';
 import 'package:auto_route/auto_route.dart';
-import '../routes/app_routes.gr.dart';
+import '../../../routes/app_routes.gr.dart';
 
 @RoutePage(name: 'LoginScreenRoute', deferredLoading: true)
 class LoginScreen extends ConsumerStatefulWidget {
@@ -125,7 +125,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                         await TokenService.saveToken(message!);
 
-                        AutoRouter.of(context).push(const HomeScreenRoute());
+                        AutoRouter.of(context).push(const HomeModuleRoute(children: [HomeScreenRoute()]));
                       } catch (e) {
                         print(e);
                         ScaffoldMessenger.of(

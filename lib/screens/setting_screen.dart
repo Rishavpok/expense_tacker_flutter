@@ -1,6 +1,7 @@
-import 'package:expense_tracker/screens/login_screen.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:expense_tracker/services/token_service.dart';
 import 'package:flutter/material.dart';
+import '../routes/app_routes.gr.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -23,9 +24,7 @@ class _SettingScreenState extends State<SettingScreen> {
               duration: Duration(seconds: 3),
             ),
           );
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
-          );
+          AutoRouter.of(context).replaceAll([const IntroScreenRoute()]);
         },
         child: Text('Log out'),
       ),

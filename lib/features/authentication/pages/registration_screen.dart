@@ -1,6 +1,6 @@
 import 'package:expense_tracker/modals/registration.dart';
 import 'package:expense_tracker/providers/registration_provider.dart';
-import 'package:expense_tracker/screens/login_screen.dart';
+import 'package:expense_tracker/features/authentication/pages/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
