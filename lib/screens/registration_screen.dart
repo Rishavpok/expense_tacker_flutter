@@ -4,7 +4,10 @@ import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:auto_route/auto_route.dart';
 
+
+@RoutePage(name: 'RegistrationScreenRoute', deferredLoading: true)
 class RegistrationScreen extends ConsumerStatefulWidget {
   const RegistrationScreen({super.key});
 

@@ -2,7 +2,12 @@ import 'package:expense_tracker/screens/dashboard_screen.dart';
 import 'package:expense_tracker/screens/profile_screen.dart';
 import 'package:expense_tracker/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 
+
+
+
+@RoutePage(name: 'HomeScreenRoute', deferredLoading: true)
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 

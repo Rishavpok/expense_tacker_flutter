@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:expense_tracker/core/services/api_service.dart';
 import 'package:expense_tracker/services/token_service.dart';
 
 class ProfileService {
@@ -11,7 +12,7 @@ class ProfileService {
       throw Exception('Token not found');
     }
     try {
-      final response = await _dio.get(
+     final response = await _dio.get(
         'http://localhost:3000/api/users/details',
         options: Options(headers: {  'Authorization': 'Bearer $token',}),
       );

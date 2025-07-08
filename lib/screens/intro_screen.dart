@@ -1,7 +1,12 @@
 import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:expense_tracker/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
+import '../../../../routes/app_routes.gr.dart';
 
+
+
+@RoutePage(name: 'IntroScreenRoute', deferredLoading: true)
 class IntroScreen extends StatelessWidget {
   const IntroScreen({super.key});
 
@@ -33,11 +38,9 @@ class IntroScreen extends StatelessWidget {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => RegistrationScreen(),
-                      ),
-                    );
+                   AutoRouter.of(
+                      context,
+                    ).push(const AuthenticationModuleRoute(children: [RegistrationScreenRoute()]));
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size.fromHeight(50),
@@ -54,11 +57,9 @@ class IntroScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 32.0),
                 child: ElevatedButton(
                   onPressed: () {
-                       Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => LoginScreen(),
-                      ),
-                    );
+                    AutoRouter.of(
+                      context,
+                    ).push(const AuthenticationModuleRoute(children: [LoginScreenRoute()]));
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size.fromHeight(50),
