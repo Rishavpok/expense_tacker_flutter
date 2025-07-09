@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+
 class NotificationService {
+  static Function(Map<String, dynamic> data)? handleNotificationTap;
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   static final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
@@ -16,7 +18,9 @@ class NotificationService {
   }
 
   static Future<void> initializeLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     final initSettings = InitializationSettings(
       android: androidSettings,
       iOS: DarwinInitializationSettings(),
@@ -40,16 +44,24 @@ class NotificationService {
 
   static void _listenToMessages() {
     FirebaseMessaging.onMessage.listen((message) {
-      print('💬 Foreground message: ${message.notification?.title} - ${message.notification?.body}');
-      _showLocalNotification(message.notification?.title, message.notification?.body);
+      print(
+        '💬 Foreground message: ${message.notification?.title} - ${message.notification?.body}',
+      );
+      _showLocalNotification(
+        message.notification?.title,
+        message.notification?.body,
+      );
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('📲 App opened from notification: ${message.messageId}');
-    });
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    handleNotificationTap?.call(message.data);
+  });
   }
 
-  static Future<void> _showLocalNotification(String? title, String? body) async {
+  static Future<void> _showLocalNotification(
+    String? title,
+    String? body,
+  ) async {
     const androidDetails = AndroidNotificationDetails(
       'channel_id',
       'channel_name',

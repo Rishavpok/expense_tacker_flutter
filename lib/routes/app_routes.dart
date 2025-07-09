@@ -29,5 +29,9 @@ class AppRouter extends RootStackRouter {
       path: '/home',
       children: homeRoutes
     ),
+    AutoRoute(
+      page: ProductDetailsScreenRoute.page,
+      path: '/product'
+    )
   ];
 }
